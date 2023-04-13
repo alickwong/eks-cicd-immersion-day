@@ -8,7 +8,7 @@ pwd
 
 eksctl utils associate-iam-oidc-provider \
     --region ${AWS_REGION} \
-    --cluster eksworkshop-eksctl \
+    --cluster ${EKS_CLUSTER_NAME} \
     --approve
 
 
@@ -19,7 +19,7 @@ aws iam create-policy \
     --policy-document file://iam-policy.json
 
 eksctl create iamserviceaccount \
---cluster=eksworkshop-eksctl \
+--cluster=${EKS_CLUSTER_NAME} \
 --namespace=kube-system \
 --name=aws-load-balancer-controller \
 --attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \
@@ -31,6 +31,6 @@ curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 
 
 helm repo add eks https://aws.github.io/eks-charts
 
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=eksworkshop-eksctl --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=${EKS_CLUSTER_NAME} --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
 
 kubectl get deployment -n kube-system aws-load-balancer-controller
